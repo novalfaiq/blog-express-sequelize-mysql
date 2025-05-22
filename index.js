@@ -1,5 +1,6 @@
 const express = require('express');
 const { User, Post, Preference } = require('./models');
+const { Op } = require('sequelize'); // Tambahkan import ini
 
 const app = express();
 app.use(express.json());
@@ -139,6 +140,68 @@ app.get('/posts/:postId', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Terjadi kesalahan saat mengambil data post' });
+  }
+});
+
+// Endpoint untuk soft delete user
+app.delete('/users/:userId', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const user = await User.findByPk(userId);
+    
+    if (!user) {
+      return res.status(404).json({ message: 'Pengguna tidak ditemukan' });
+    }
+    
+    await user.destroy(); // Ini akan melakukan soft delete karena paranoid: true
+    
+    res.status(200).json({ message: 'Pengguna berhasil dihapus (soft delete)' });
+  } catch (error) {
+    console.error('Error saat melakukan soft delete pengguna:', error);
+    res.status(500).json({ message: 'Terjadi kesalahan saat menghapus pengguna' });
+  }
+});
+
+// Endpoint untuk mendapatkan daftar user yang sudah di-soft delete
+app.get('/users/deleted', async (req, res) => {
+  try {
+    const deletedUsers = await User.findAll({
+      paranoid: false, // Mengambil semua record termasuk yang sudah di-soft delete
+      where: {
+        deletedAt: { [Op.not]: null } // Hanya mengambil yang sudah di-soft delete
+      }
+    });
+    
+    res.status(200).json(deletedUsers);
+  } catch (error) {
+    console.error('Error saat mengambil daftar pengguna yang dihapus:', error);
+    res.status(500).json({ message: 'Terjadi kesalahan saat mengambil daftar pengguna yang dihapus' });
+  }
+});
+
+// Endpoint untuk restore user yang sudah di-soft delete
+app.post('/users/:userId/restore', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    
+    // Cari user yang sudah di-soft delete
+    const user = await User.findByPk(userId, { paranoid: false });
+    
+    if (!user) {
+      return res.status(404).json({ message: 'Pengguna tidak ditemukan' });
+    }
+    
+    if (user.deletedAt === null) {
+      return res.status(400).json({ message: 'Pengguna ini tidak dalam status dihapus' });
+    }
+    
+    // Restore user
+    await user.restore();
+    
+    res.status(200).json({ message: 'Pengguna berhasil dipulihkan', user });
+  } catch (error) {
+    console.error('Error saat memulihkan pengguna:', error);
+    res.status(500).json({ message: 'Terjadi kesalahan saat memulihkan pengguna' });
   }
 });
 

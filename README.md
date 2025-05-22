@@ -20,7 +20,10 @@ Lazy loading berarti data terkait dimuat hanya ketika benar-benar dibutuhkan, bi
 ### User
 - `POST /users` - Membuat pengguna baru
 - `GET /users` - Mendapatkan semua pengguna beserta post dan preferensi mereka (Eager Loading)
-- `GET /users/:userId` - Mendapatkan pengguna berdasarkan ID beserta post dan preferensi mereka (Lazy Loading) (Eager Loading)
+- `GET /users/:userId` - Mendapatkan pengguna berdasarkan ID beserta post dan preferensi mereka (Lazy Loading)
+- `DELETE /users/:userId` - Melakukan soft delete pada pengguna
+- `GET /users/deleted` - Mendapatkan daftar pengguna yang sudah di-soft delete
+- `POST /users/:userId/restore` - Mengembalikan (restore) pengguna yang sudah di-soft delete
 
 ### Post
 - `POST /users/:userId/posts` - Membuat post baru untuk pengguna tertentu
