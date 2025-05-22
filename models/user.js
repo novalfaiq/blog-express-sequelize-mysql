@@ -22,11 +22,13 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
     email: {
       type: DataTypes.STRING,
-      unique: true,
-    }
+      unique: true
+    },
+    deletedAt: DataTypes.DATE
   }, {
     sequelize,
     modelName: 'User',
+    paranoid: true, // Mengaktifkan soft delete
   });
   return User;
 };

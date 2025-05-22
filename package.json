@@ -8,6 +8,7 @@
     "migrate:up": "sequelize db:migrate",
     "migrate:down": "sequelize db:migrate:undo",
     "migrate:drop": "sequelize db:migrate:undo:all",
+    "seed:run": "npx sequelize-cli db:seed:all",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
