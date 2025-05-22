@@ -37,7 +37,7 @@ Lazy loading berarti data terkait dimuat hanya ketika benar-benar dibutuhkan, bi
 
 ## Cara Menjalankan
 
-1. Pastikan MySQL sudah berjalan (gunakan Docker Compose)
+1. Pastikan MySQL sudah berjalan (gunakan Docker Compose), mysql di set dengan port 3310. Credentials tertera pada file compose.yaml
    ```
    docker-compose up -d
    ```
@@ -47,9 +47,9 @@ Lazy loading berarti data terkait dimuat hanya ketika benar-benar dibutuhkan, bi
    npm install
    ```
 
-3. Jalankan migrasi database
+3. Jalankan migrasi database & seeder
    ```
-   npx sequelize-cli db:migrate
+   npm run migrate:up && npm run seed:run
    ```
 
 4. Jalankan aplikasi
